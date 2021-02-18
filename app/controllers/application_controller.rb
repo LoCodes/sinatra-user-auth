@@ -11,18 +11,27 @@ class ApplicationController < Sinatra::Base
     erb :home
   end
 
+  #get client to fill out form
+
   get '/registrations/signup' do
 
     erb :'/registrations/signup'
   end
 
+  #post form from client, saves, signs in and redirects
+
   post '/registrations' do
+
     @user = User.new(name: params["name"], email: params["email"], password: params["password"])
     @user.save
+
+    #signs in the user
     session[:user_id] = @user.id
 
     redirect '/users/home'
   end
+
+
 
   get '/sessions/login' do
 
@@ -32,10 +41,14 @@ class ApplicationController < Sinatra::Base
 
   post '/sessions' do
     @user = User.find_by(email: params[:email], password: params[:password])
+
+    #if user found redirect to homepage of user 
     if @user
       session[:user_id] = @user.id
       redirect '/users/home'
     end
+
+    #if user not found stay on the log in page 
     redirect '/sessions/login'
   end
 
